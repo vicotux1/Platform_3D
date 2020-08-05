@@ -7,8 +7,10 @@ public class Player_Controller : MonoBehaviour
     #region Variables
     [Header("Player Movement")]
     [SerializeField][Range(0.1f, 10.0f)]float MaxSpeed=0.1f;
-    [SerializeField]string Axis_Horizontal="Horizontal";
+    [SerializeField][Range(0.1f, 10.0f)]float SpeedX=0,SpeedY=0;
+    [SerializeField]string Axis_Horizontal="Horizontal",Axis_Vertical="Vertical";
     float MoveDirection=0;
+    [SerializeField][Range(1, 2)]int serialID=1;
     [Header("Jump")]
     [SerializeField]string ButtonJump="Jump";
     [SerializeField]float Jump_Speed=600.0f;
@@ -17,7 +19,7 @@ public class Player_Controller : MonoBehaviour
     public float Radius=2.0f;
     public LayerMask Layer;
     //Private Variables
-    Rigidbody rigidbody;
+    private new Rigidbody rigidbody;
     Animator anim;
     [Header ("Camera Follow")]
 	[SerializeField] Vector3 _Distancia_a_seguir=Vector3.zero;
@@ -41,21 +43,14 @@ public class Player_Controller : MonoBehaviour
         if(grounded_Check==null){
             grounded_Check=GameObject.Find("Ground_Check").transform;
         }
-    }   
-    void Update(){
-        MoveDirection=Input.GetAxis(Axis_Horizontal);
-        IsGrounded=Physics2D.OverlapCircle(grounded_Check.position, Radius,Layer);
-        if(IsGrounded==true && Input.GetButtonDown(ButtonJump)){
-            /*if(Input.GetButton(ButtonJump)){*/
-        rigidbody.AddForce(Vector3.up*Jump_Speed);}
-        //bool B_Jump=true;
-        /*anim.SetBool("Jump",B_Jump);
-        B_Jump=false;
-        anim.SetBool("Jump",B_Jump);*/
-        //_Jump(Jump);
-    }   
+    }  
     void FixedUpdate(){
-        Movement(MoveDirection);
+        MoveDirection=Input.GetAxis(Axis_Horizontal);
+        float MoveVertical=Input.GetAxisRaw(Axis_Vertical);
+        IsGrounded=Physics2D.OverlapCircle(grounded_Check.position, Radius,Layer);
+        bool b_Jump=Input.GetButtonDown(ButtonJump);
+        _Jump(b_Jump);
+        Movement(MoveDirection,MoveVertical);
     } 
     void LateUpdate(){
 		float RotateX=Input.GetAxis(AxisX);
@@ -64,10 +59,18 @@ public class Player_Controller : MonoBehaviour
 	}
     #endregion
     #region Funtions Movement
-    void Movement(float Horizontal){
-       rigidbody.velocity=Vector2.right*Horizontal*MaxSpeed;
+    void Movement(float Horizontal, float Vertical){
+        if(serialID==1){
+            rigidbody.velocity=new Vector2(Horizontal*MaxSpeed, rigidbody.velocity.y);
        flip(Horizontal);
        anim.SetFloat("Speed",Horizontal);
+        }if(serialID==2){
+            rigidbody.velocity=new Vector3(Horizontal*SpeedX,0,Vertical*SpeedY);
+       flip(Horizontal);
+       anim.SetFloat("SpeedX",Horizontal);
+       anim.SetFloat("SpeedY",Vertical);
+        }
+       
     }
     void flip(float H){
         if(H>=0.1f){
@@ -77,6 +80,7 @@ public class Player_Controller : MonoBehaviour
            //Debug.Log("Flip_X");
             }
     }
+
     #endregion
     #region Camera Follow
     void Camera_follow(){
@@ -86,8 +90,10 @@ public class Player_Controller : MonoBehaviour
 		Main.transform.position = Smooth;
 		}
     #endregion
-    /*public void _Jump(bool Jump){
-        
-
-    }*/
+    #region Salto
+    public void _Jump(bool is_jump){
+        if(IsGrounded==true && is_jump ){
+             rigidbody.AddForce(new Vector2(0,Jump_Speed));}
+             }
+    #endregion         
 }
