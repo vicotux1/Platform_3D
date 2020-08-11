@@ -44,37 +44,28 @@ Time.timeScale = 1;
     {
         canvas.enabled = !canvas.enabled;
         Cursor.visible = !false;
-
-        //Time.timeScale = Time.timeScale == 0 ? 1 : 0;
         Time.timeScale = Time.timeScale == 0 ? 1: 0;
     }
 //Sale del juego, "#if UNITY_EDITOR" se usa solo estando en unity
-	public void mascalidad()
-	{
+	public void mascalidad(){
 		QualitySettings.IncreaseLevel();
-	
-	}
-	public void menoscalidad()
-	{
+		}
+	public void menoscalidad(){
 		QualitySettings.DecreaseLevel();
 	}
-	public void Antialias_off()
-	{
+	public void Antialias_off(){
 	QualitySettings.antiAliasing = 0;
 	Debug.Log ("0 AA");
 	}
-	public void Antialias_2()
-	{
+	public void Antialias_2(){
 		QualitySettings.antiAliasing = 2;
 		Debug.Log ("2 AA");
 	}
-	public void Antialias_4()
-	{
+	public void Antialias_4(){
 		QualitySettings.antiAliasing = 4;
 		Debug.Log ("4 AA");
 	}
-	public void Antialias_8()
-	{
+	public void Antialias_8(){
 		QualitySettings.antiAliasing = 8;
 		Debug.Log ("8 AA");
 	}
